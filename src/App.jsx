@@ -101,6 +101,7 @@ function App() {
           <ProductGrid products={products}
             searchQuery={searchQuery}
             filteredProducts={filteredProducts}
+            addToCart={addToCart}
           />
         </div>}
 
@@ -108,7 +109,7 @@ function App() {
       <div className="cart-panel">
         <div>
           <h2>Your Shopping Cart</h2>
-          <hr style={{ margin: '15px 0', borderColor: '#e0e0e0' }} />
+          <hr style={{ margin: '10px 0', borderColor: '#e0e0e0' }} />
         </div>
         <ShoppingCart 
         removeCartItem={removeCartItem}

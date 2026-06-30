@@ -1,5 +1,5 @@
 
-export default function ProductCard({ item }) {
+export default function ProductCard({ item, addToCart }) {
     return (
         <div className="product-card">
             <img src={item.image} alt={item.title} className="product-image" />
@@ -16,7 +16,7 @@ export default function ProductCard({ item }) {
                 <span style={{ fontWeight: 'bold', color: '#10b981' }}>
                     {item.price.toFixed(2)}
                 </span>
-                <button className="add-btn">
+                <button className="add-btn" onClick={()=>addToCart(item)}>
                     Add +
                 </button>
                 

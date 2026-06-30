@@ -1,12 +1,15 @@
 //Prducts Grid
 import ProductCard from "./ProductCard";
 
-export default function ProductGrid({ filteredProducts, searchQuery}) {
+export default function ProductGrid({ filteredProducts, searchQuery, addToCart}) {
     return (
         
         <div className="products-grid">
             {filteredProducts.map((singleProduct) => (
-                <ProductCard key={singleProduct.id} item={singleProduct} />
+                <ProductCard key={singleProduct.id}
+                 item={singleProduct} 
+                addToCart={addToCart}
+                />
                 
             ))}
             {filteredProducts.length === 0 && (
