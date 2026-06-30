@@ -6,7 +6,7 @@ function SearchProducts({searchQuery, setSearchQuery,clearSearch}){
                 {'  '}
                 <input type="text" name="" id="searchInput" placeholder="search products..." value={searchQuery} onChange={(e)=> setSearchQuery(e.target.value)} className="searchInput" />
                 {' '}
-               <button onClick={clearSearch}>X</button>
+               <button onClick={clearSearch}>✕</button>
         </div>
     )
 
