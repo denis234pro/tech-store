@@ -93,17 +93,34 @@ function App() {
 
   function clearCart() {
     setCart([])
-    // Point the remve function to the exact  key woith data. 
-    localStorage.removeItem('tech_store_cart');
+
+    localStorage.removeItem('tech_store_cart'); // Point the remve function to the exact  key woith data
   }
 
   //UseEffect: 3,  Initiate Local storage watchman.
   useEffect(() => {
-    // convert cart data into local storage supported type
-    const compresssedCartData = JSON.stringify(cart)
-    //  Save data 
-    localStorage.setItem('tech_store_cart', compresssedCartData)
+
+    const compresssedCartData = JSON.stringify(cart)  // convert cart data into local storage supported type
+
+    localStorage.setItem('tech_store_cart', compresssedCartData) //  Save data 
   }, [cart])
+
+  // Sort Products function
+  function sortProductsByPrice(orderDirection) {
+
+    const sortedCopy = [...filteredProducts];  // safe copy of the products to avoid violenting react immutability rules
+    sortedCopy.sort((itemA, itemB) => {
+      if (orderDirection === 'lowToHigh') {
+        return itemA - itemB; // Low prices first
+      }
+      else if (orderDirection === 'highToLow') {
+        return itemB - itemA; //High prices first
+      }
+      return 0; // maintain original positina
+    })
+    setProducts(sortedCopy)
+    console.log(typeof sortedCopy)
+  }
 
   return (
     <div className="store-layout">
@@ -123,13 +140,26 @@ function App() {
           clearSearch={clearSearch}
 
         />
+        
+        {!loading && !error && (<div>
+          <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', alignItems: 'center', padding: '10px', borderRadius: '6px'}}>
+          <span style={{ fontSize: '14px', color: '#666', fontWeight: 'bold' }}>Sort Catalog:</span>
+          <button style={{ padding: '6px 12px', background: '#6382c5', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold'}}>💲Price: Low to High</button>
+
+          <button style={{ padding: '6px 12px', background: '#6382c5', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold'}} >Price: High to Low</button>
+        </div>
+        </div>)}
+
         {!loading && !error && <div className="products-grid">
           <ProductGrid products={products}
             searchQuery={searchQuery}
             filteredProducts={filteredProducts}
             addToCart={addToCart}
+
           />
-        </div>}
+
+        </div>
+        }
 
       </div>
       <div className="cart-panel">
