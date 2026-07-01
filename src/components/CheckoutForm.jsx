@@ -17,10 +17,10 @@ export default function CheckoutForm({ totalCost }) {
             alert('Customer shipping credentials cannot be blank')
             return;
         }
-        alert(`SUCCESS: Order Placed for ${customInfo.fullName}!\nTotal Amount Charged: ${totalCost.toFixed(2)}`)
+        alert(`SUCCESS: Order Placed for ${customInfo.fullName}!\nTotal Amount Charged: $${totalCost.toFixed(2)}`)
         // Resetting the form to initial state
         setCustomInfo({
-            customInfo: '',
+            fullName: '',
             shippingAddress: ''
         })
 
