@@ -1,3 +1,5 @@
+
+import CheckoutForm from "./CheckoutForm"
 export default function ShoppingCart({ cart, removeCartItem }) {
     //Calculate total checkout cost live from state memory snapshots
     const totalCost = cart.reduce((accumulator, item) => {
@@ -6,7 +8,7 @@ export default function ShoppingCart({ cart, removeCartItem }) {
 
     return (
         <div>
-        
+
             {/* If the cart array length is empty, show the baseline placeholder */}
             {cart.length === 0 && (<p style={{ color: '#aaa', fontStyle: 'italic' }}>Your Manifest is currently Empty</p>)}
 
@@ -26,7 +28,7 @@ export default function ShoppingCart({ cart, removeCartItem }) {
                                     ${cartItem.price.toFixed(2)} x {cartItem.quantity}
                                 </p>
                             </div>
-                            <button style={{ border: 'none', color: '#ef4444', background: 'none', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer'}} onClick={()=> removeCartItem(cartItem.id)}>✕</button>
+                            <button style={{ border: 'none', color: '#ef4444', background: 'none', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer' }} onClick={() => removeCartItem(cartItem.id)}>✕</button>
                         </div>
                     )
                 }))}
@@ -35,6 +37,8 @@ export default function ShoppingCart({ cart, removeCartItem }) {
                 <div style={{ borderTop: '2px solid  #e2e8f0', paddingTop: '15px', marginTop: '15px' }}>
                     <h3>Total Cost: ${totalCost.toFixed(2)}</h3>
                 </div>
+
+                {cart.length > 0 && (<CheckoutForm cart={cart} totalCost={totalCost} />)}
 
             </div>
 

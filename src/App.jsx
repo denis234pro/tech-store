@@ -77,6 +77,7 @@ function App() {
   function removeCartItem(itemId) {
     setCart(prevCart => prevCart.filter(cartItem => cartItem.id !== itemId))
   }
+ 
 
 
   return (
@@ -115,8 +116,7 @@ function App() {
         removeCartItem={removeCartItem}
         cart={cart}
         />
-
-      </div>
+            </div>
     </div>
   )
 }

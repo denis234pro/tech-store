@@ -13,7 +13,7 @@ body {
 
 .store-layout {
   display: grid;
-  grid-template-columns: 1fr 350px; /* Main product grid + Fixed Sidebar Shopping Cart */
+ grid-template-columns: 3fr 1fr;/* Main product grid + Fixed Sidebar Shopping Cart */
   min-height: 100vh;
   scrollbar-width: none;
 }
