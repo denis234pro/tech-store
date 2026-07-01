@@ -1,6 +1,6 @@
 
 import CheckoutForm from "./CheckoutForm"
-export default function ShoppingCart({ cart, removeCartItem }) {
+export default function ShoppingCart({ cart, removeCartItem, clearCart }) {
     //Calculate total checkout cost live from state memory snapshots
     const totalCost = cart.reduce((accumulator, item) => {
         return accumulator + (item.price * item.quantity)
@@ -35,10 +35,16 @@ export default function ShoppingCart({ cart, removeCartItem }) {
 
                 {/* The final numerical summary calculated by reduce calculator engine! */}
                 <div style={{ borderTop: '2px solid  #e2e8f0', paddingTop: '15px', marginTop: '15px' }}>
+                     {' '}
+                    {cart.length > 0 && <button style={{ position: 'relative', left: '70%', marginTop: '10px', marginBottom: '15px', background: '#cbd5e1', color: '#475569', border: 'none', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold' }} onClick={clearCart}>clear cart</button>}
                     <h3>Total Cost: ${totalCost.toFixed(2)}</h3>
+                   
                 </div>
 
-                {cart.length > 0 && (<CheckoutForm cart={cart} totalCost={totalCost} />)}
+                {cart.length > 0 && (<CheckoutForm cart={cart} totalCost={totalCost}
+
+
+                />)}
 
             </div>
 

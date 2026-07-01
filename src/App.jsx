@@ -1,4 +1,4 @@
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import ProductCard from "./components/ProductCard";
 import { SearchProducts } from "./components/SearchForm";
@@ -7,12 +7,25 @@ import ProductGrid from "./components/ProductGrid";
 
 function App() {
 
+  const [cart, setCart] = useState(() => {
+
+    // Restore user saved cart on page refresh
+    const savedCartData = localStorage.getItem('tech_store_cart');
+    if (savedCartData) {
+      // convert to original data type
+      return JSON.parse(savedCartData);
+    }
+    // Boot cleanly if there is no any saved cart data
+    return []
+  });
+
   const [products, setProducts] = useState([])
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('')
-  const [cart, setCart] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null)
+
 
   // fetch Inventory handler function
 
@@ -64,7 +77,7 @@ function App() {
       // if item (object data type) exists , rebuild the array using .map method
       if (existingItem) {
 
-        return prevCart.map(cartItem => cartItem.id === productItem.id ? { ...cartItem, quantity: cartItem.quantity +1 } : cartItem);
+        return prevCart.map(cartItem => cartItem.id === productItem.id ? { ...cartItem, quantity: cartItem.quantity + 1 } : cartItem);
       }
       // Else if item not found , break into the original productItem the user clicked and then add their a new key-value pair (tracker or counter)
       return [...prevCart, { ...productItem, quantity: 1 }]
@@ -77,8 +90,20 @@ function App() {
   function removeCartItem(itemId) {
     setCart(prevCart => prevCart.filter(cartItem => cartItem.id !== itemId))
   }
- 
 
+  function clearCart() {
+    setCart([])
+    // Point the remve function to the exact  key woith data. 
+    localStorage.removeItem('tech_store_cart');
+  }
+
+  //UseEffect: 3,  Initiate Local storage watchman.
+  useEffect(() => {
+    // convert cart data into local storage supported type
+    const compresssedCartData = JSON.stringify(cart)
+    //  Save data 
+    localStorage.setItem('tech_store_cart', compresssedCartData)
+  }, [cart])
 
   return (
     <div className="store-layout">
@@ -112,11 +137,12 @@ function App() {
           <h2>Your Shopping Cart</h2>
           <hr style={{ margin: '10px 0', borderColor: '#e0e0e0' }} />
         </div>
-        <ShoppingCart 
-        removeCartItem={removeCartItem}
-        cart={cart}
+        <ShoppingCart
+          removeCartItem={removeCartItem}
+          cart={cart}
+          clearCart={clearCart}
         />
-            </div>
+      </div>
     </div>
   )
 }
