@@ -4,6 +4,7 @@ import ProductCard from "./components/ProductCard";
 import { SearchProducts } from "./components/SearchForm";
 import ShoppingCart from "./components/ShoppingCart";
 import ProductGrid from "./components/ProductGrid";
+import FilterByCategory from "./components/CategoryFilter";
 
 function App() {
 
@@ -108,18 +109,17 @@ function App() {
   // Sort Products function
   function sortProductsByPrice(orderDirection) {
 
-    const sortedCopy = [...filteredProducts];  // safe copy of the products to avoid violenting react immutability rules
+    const sortedCopy = [...filteredProducts];  // safe copy of the products to avoid violeting react immutability rules
     sortedCopy.sort((itemA, itemB) => {
       if (orderDirection === 'lowToHigh') {
-        return itemA - itemB; // Low prices first
+        return itemA.price - itemB.price; // Low prices first
       }
       else if (orderDirection === 'highToLow') {
-        return itemB - itemA; //High prices first
+        return itemB.price - itemA.price; //High prices first
       }
       return 0; // maintain original positina
     })
     setProducts(sortedCopy)
-    console.log(typeof sortedCopy)
   }
 
   return (
@@ -143,11 +143,17 @@ function App() {
         
         {!loading && !error && (<div>
           <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', alignItems: 'center', padding: '10px', borderRadius: '6px'}}>
-          <span style={{ fontSize: '14px', color: '#666', fontWeight: 'bold' }}>Sort Catalog:</span>
-          <button style={{ padding: '6px 12px', background: '#6382c5', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold'}}>💲Price: Low to High</button>
+          <span style={{ fontSize: '14px', color: '#666', fontWeight: 'bold' }}>Sort by prices:</span>
+          <button  onClick={()=> sortProductsByPrice('lowToHigh')} style={{ padding: '6px 12px', background: '#6382c5', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold'}}>💲Low to High</button>
 
-          <button style={{ padding: '6px 12px', background: '#6382c5', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold'}} >Price: High to Low</button>
+          <button style={{ padding: '6px 12px', background: '#6382c5', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold'}} onClick={()=> sortProductsByPrice('highToLow')}>High to Low</button>
         </div>
+
+        <FilterByCategory 
+        products={products}
+        setFilteredProducts={setFilteredProducts}
+        
+        />
         </div>)}
 
         {!loading && !error && <div className="products-grid">

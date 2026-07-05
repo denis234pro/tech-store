@@ -2,17 +2,18 @@
 import ProductCard from "./ProductCard";
 
 export default function ProductGrid({ filteredProducts, searchQuery, addToCart}) {
+    const hasProducts =  filteredProducts && filteredProducts.length > 0 ;
     return (
         
         <div className="products-grid">
-            {filteredProducts.map((singleProduct) => (
-                <ProductCard key={singleProduct.id}
+            {hasProducts && filteredProducts.map((singleProduct, index) => (
+                <ProductCard key={singleProduct?.id ? `prod-${singleProduct.id}` : `idx-${index}` }
                  item={singleProduct} 
                 addToCart={addToCart}
                 />
                 
             ))}
-            {filteredProducts.length === 0 && (
+            { filteredProducts && filteredProducts.length === 0 && (
                 <div style={{ textAlign: 'center', padding: '20px', color: 'gray'}}>
                 <h3>Search Not Found</h3>
               <br />
