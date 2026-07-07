@@ -118,9 +118,41 @@ function App() {
         return itemB.price - itemA.price; //High prices first
       }
       return 0; // maintain original positina
-    })
+    });
     setProducts(sortedCopy)
+
   }
+
+  // Function update Cart Item quantity
+  function updateCartItemQuantity(targetId, intent) {
+
+    const filteredCart = cart.map((cartItem) => {
+
+      // 1. FIRST check if this is the item the user clicked
+      if (cartItem.id === targetId) {
+
+        // 2. THEN decide whether to add or subtract
+        if (intent === "increment") {
+          return { ...cartItem, quantity: cartItem.quantity + 1 }; // Increase item quantity
+        }
+
+        if (intent === "decrement") {
+          return { ...cartItem, quantity: cartItem.quantity - 1 }; // Decrease item quantity
+        }
+      }
+
+      // This now correctly runs for all other non-matching items
+      return cartItem;
+    });
+
+    const purgedCart = filteredCart.filter((cartItem) => {
+      return cartItem.quantity > 0;
+    });
+
+    setCart(purgedCart);
+  }
+
+
 
   return (
     <div className="store-layout">
@@ -140,20 +172,20 @@ function App() {
           clearSearch={clearSearch}
 
         />
-        
+
         {!loading && !error && (<div>
-          <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', alignItems: 'center', padding: '10px', borderRadius: '6px'}}>
-          <span style={{ fontSize: '14px', color: '#666', fontWeight: 'bold' }}>Sort by prices:</span>
-          <button  onClick={()=> sortProductsByPrice('lowToHigh')} style={{ padding: '6px 12px', background: '#6382c5', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold'}}>💲Low to High</button>
+          <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', alignItems: 'center', padding: '10px', borderRadius: '6px' }}>
+            <span style={{ fontSize: '14px', color: '#666', fontWeight: 'bold' }}>Sort by prices:</span>
+            <button onClick={() => sortProductsByPrice('lowToHigh')} style={{ padding: '6px 12px', background: '#6382c5', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' }}>💲Low to High</button>
 
-          <button style={{ padding: '6px 12px', background: '#6382c5', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold'}} onClick={()=> sortProductsByPrice('highToLow')}>High to Low</button>
-        </div>
+            <button style={{ padding: '6px 12px', background: '#6382c5', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' }} onClick={() => sortProductsByPrice('highToLow')}>High to Low</button>
+          </div>
 
-        <FilterByCategory 
-        products={products}
-        setFilteredProducts={setFilteredProducts}
-        
-        />
+          <FilterByCategory
+            products={products}
+            setFilteredProducts={setFilteredProducts}
+
+          />
         </div>)}
 
         {!loading && !error && <div className="products-grid">
@@ -177,6 +209,7 @@ function App() {
           removeCartItem={removeCartItem}
           cart={cart}
           clearCart={clearCart}
+          updateCartItemQuantity={updateCartItemQuantity}
         />
       </div>
     </div>
