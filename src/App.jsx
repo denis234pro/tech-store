@@ -21,7 +21,7 @@ function App() {
 
   const [promoCodeInput, setPromoCodeInput] = useState('')
   const [activeDiscountRate, setActiveDiscountRate] = useState(0);
-  const [hasDiscount ,setHasDiscount] = useState(false);
+  const [hasDiscount, setHasDiscount] = useState(false);
 
   const [products, setProducts] = useState([])
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -83,7 +83,7 @@ function App() {
     }
   }
   // Function remove discount code  
-  function removeDiscountCode(){
+  function removeDiscountCode() {
     setActiveDiscountRate(0)
     setHasDiscount(false)
     setPromoCodeInput('')
