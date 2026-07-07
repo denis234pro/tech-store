@@ -56,9 +56,9 @@ export default function ShoppingCart({ cart, removeCartItem, clearCart, updateCa
                    
                 </div>
 
-                {cart.length > 0 && (<CheckoutForm cart={cart} totalCost={totalCost}
-
-
+                {cart.length > 0 && (<CheckoutForm cart={cart} 
+                totalCost={totalCost}
+                clearCart={clearCart}
                 />)}
 
             </div>
