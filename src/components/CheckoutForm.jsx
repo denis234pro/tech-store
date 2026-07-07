@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function CheckoutForm({ totalCost , clearCart}) {
+export default function CheckoutForm({ totalCost, clearCart }) {
     const [customInfo, setCustomInfo] = useState({
         fullName: '',
         shippingAddress: ''

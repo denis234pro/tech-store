@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import ProductCard from "./components/ProductCard";
 import { SearchProducts } from "./components/SearchForm";
 import ShoppingCart from "./components/ShoppingCart";
 import ProductGrid from "./components/ProductGrid";
@@ -19,6 +18,10 @@ function App() {
     // Boot cleanly if there is no any saved cart data
     return []
   });
+
+  const [promoCodeInput, setPromoCodeInput] = useState('')
+  const [activeDiscountRate, setActiveDiscountRate] = useState(0);
+  const [hasDiscount ,setHasDiscount] = useState(false);
 
   const [products, setProducts] = useState([])
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -50,6 +53,42 @@ function App() {
 
 
   }, [])
+
+  // Centralised Cash Register Pipeline
+  const subTotalCost = cart.reduce((runnnigTotal, currentItem) => {
+    return runnnigTotal + (currentItem.price * currentItem.quantity);
+  }, 0) //◄ The initial calculator screen  at 0 reading !
+
+  const discountAmount = subTotalCost * activeDiscountRate; // calculate Amount to be deducted as discount
+  const FinalTotalCost = subTotalCost - discountAmount; // Final Amount 
+
+  // --- PROMO CODE VALIDATION
+  function applyPromoCode() {
+    const sanitisedInput = promoCodeInput.trim().toUpperCase();
+    if (sanitisedInput === "TECHCORE20") {
+      setActiveDiscountRate(0.20);
+      setHasDiscount(true)
+      alert(`🎟️ Promo Applied: 20% Technical Discount injected successfully , ${sanitisedInput}`)
+    }
+    else if (sanitisedInput === "FREESHIP") {
+      alert(`🚚 Code Recognized: Free Shipping applied to layout manifest!, ${sanitisedInput}`)
+      setActiveDiscountRate(0);
+      setHasDiscount(true)
+
+    }
+    else {
+      alert("❌ Invalid Code: This voucher ledger key does not exist on our servers.")
+      setActiveDiscountRate(0)
+      setHasDiscount(false)
+    }
+  }
+  // Function remove discount code  
+  function removeDiscountCode(){
+    setActiveDiscountRate(0)
+    setHasDiscount(false)
+    setPromoCodeInput('')
+    alert("Discount code removed successfully")
+  }
 
   // Effect 2 ; Debounce Filter Hook
   useEffect(() => {
@@ -210,6 +249,17 @@ function App() {
           cart={cart}
           clearCart={clearCart}
           updateCartItemQuantity={updateCartItemQuantity}
+          applyPromoCode={applyPromoCode}
+          subTotalCost={subTotalCost}
+          setActiveDiscountRate={setActiveDiscountRate}
+          activeDiscountRate={activeDiscountRate}
+          discountAmount={discountAmount}
+          FinalTotalCost={FinalTotalCost}
+          removeDiscountCode={removeDiscountCode}
+          hasDiscount={hasDiscount}
+          setHasDiscount={setHasDiscount}
+          promoCodeInput={promoCodeInput}
+          setPromoCodeInput={setPromoCodeInput}
         />
       </div>
     </div>

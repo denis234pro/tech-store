@@ -1,10 +1,31 @@
-.searchInput{
-    padding: 6px;
-     border-radius: 4px;
-    border:1px solid gray;
-
+.searchInput {
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid gray;
 }
 
-.searchInput:focus{
-    outline: none;
+.searchInput:focus {
+  outline: none;
+}
+
+.btn-apply {
+  background: #06991ab6;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.btn-remove {
+  background: #f91f02cd;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
 }
