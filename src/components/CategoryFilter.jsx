@@ -1,5 +1,5 @@
 export default function CategoryFilter({ products, setFilteredProducts }) {
-
+    // logical filtering bug 
     const availableCategories = ["all", ...new Set(products.map((item) => {
         return item.category;
     }))]

@@ -1,7 +1,7 @@
 //Prducts Grid
 import ProductCard from "./ProductCard";
 
-export default function ProductGrid({ filteredProducts, searchQuery, addToCart}) {
+export default function ProductGrid({ filteredProducts, searchQuery, addToCart, cart}) {
     const hasProducts =  filteredProducts && filteredProducts.length > 0 ;
     return (
         
@@ -10,6 +10,7 @@ export default function ProductGrid({ filteredProducts, searchQuery, addToCart})
                 <ProductCard key={singleProduct?.id ? `prod-${singleProduct.id}` : `idx-${index}` }
                  item={singleProduct} 
                 addToCart={addToCart}
+                cart={cart}
                 />
                 
             ))}

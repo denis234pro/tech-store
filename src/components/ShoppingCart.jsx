@@ -1,6 +1,7 @@
 
 import CheckoutForm from "./CheckoutForm"
-export default function ShoppingCart({ cart, removeCartItem, clearCart, updateCartItemQuantity, promoCodeInput, FinalTotalCost, setPromoCodeInput, applyPromoCode, discountAmount, removeDiscountCode, hasDiscount }) {
+export default function ShoppingCart({ cart, removeCartItem, clearCart, updateCartItemQuantity, promoCodeInput, FinalTotalCost, setPromoCodeInput, applyPromoCode, discountAmount, removeDiscountCode, hasDiscount, }) {
+
 
     return (
         <div>
@@ -21,7 +22,7 @@ export default function ShoppingCart({ cart, removeCartItem, clearCart, updateCa
                                 </h5>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '5px 0' }}>
 
-                                    <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid #cbd5e1', background: '#f8fafc', cursor: 'pointer', fontWeight: 'bold' }} onClick={() => updateCartItemQuantity(cartItem.id, "decrement")}>
+                                    <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid #cbd5e1', background: '#f8fafc', cursor: 'pointer', fontWeight: 'bold' }} onClick={() =>  updateCartItemQuantity(cartItem.id, "decrement")}>
                                         -{/*  decrement button   */}
                                     </button>
 
@@ -29,7 +30,7 @@ export default function ShoppingCart({ cart, removeCartItem, clearCart, updateCa
                                         {cartItem.quantity}
                                     </span>
 
-                                    <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid #cbd5e1', background: '#f8fafc', cursor: 'pointer', fontWeight: 'bold' }} onClick={() => updateCartItemQuantity(cartItem.id, "increment")}>
+                                    <button style={{ width: '24px', height: '24px', borderRadius: '4px', border: '1px solid #cbd5e1', background: '#f8fafc', cursor: 'pointer', fontWeight: 'bold' }} onClick={() =>  updateCartItemQuantity(cartItem.id, "increment")}>
                                         + {/*  increment button   */}
                                     </button>
                                 </div>

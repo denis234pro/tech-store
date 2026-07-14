@@ -8,7 +8,6 @@ export default function CheckoutForm({ totalCost, clearCart }) {
 
     // Form handler function 
     function handleOrderPlacement(e) {
-
         // prevent Default browser Behaviour
         e.preventDefault()
 

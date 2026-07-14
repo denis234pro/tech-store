@@ -51,7 +51,6 @@ function App() {
     }
     fetchStoreInventory();
 
-
   }, [])
 
   // Centralised Cash Register Pipeline
@@ -108,20 +107,27 @@ function App() {
   }
 
   // Cart Handler function
-  function addToCart(productItem) {
+  function addToCart(incomingCartItem) {
+    // --- UPGRADED INVENTORY-LOCKED ADD TO CART ENGINE ---
+    const rawExistingItem = cart.find((cartItem) => cartItem.id === incomingCartItem.id);
+    const currentCartQuantity = rawExistingItem ? rawExistingItem.quantity : 0;
+    const maxWareHouseStock = incomingCartItem.rating?.count || 5;
+
+    // Terminate early if the user hits the ceiling!
+    if (currentCartQuantity === maxWareHouseStock) {
+      alert(` Inventory Limit Reached, only ${maxWareHouseStock} units are available in the Ware House`);
+      return; // stop if the stock limit reached
+    }
 
     // Check if the item is already in the cart 
     setCart(prevCart => {
-      const existingItem = prevCart.find(cartItem => cartItem.id === productItem.id);
-
+      const existingItem = prevCart.find(cartItem => cartItem.id === incomingCartItem.id);
       // if item (object data type) exists , rebuild the array using .map method
       if (existingItem) {
-
-        return prevCart.map(cartItem => cartItem.id === productItem.id ? { ...cartItem, quantity: cartItem.quantity + 1 } : cartItem);
+        return prevCart.map(cartItem => cartItem.id === incomingCartItem.id ? { ...cartItem, quantity: cartItem.quantity + 1 } : cartItem);
       }
-      // Else if item not found , break into the original productItem the user clicked and then add their a new key-value pair (tracker or counter)
-      return [...prevCart, { ...productItem, quantity: 1 }]
-
+      // Else if item not found , break into the original incomingCartItem the user clicked and then add their a new key-value pair (tracker or counter)
+      return [...prevCart, { ...incomingCartItem, quantity: 1 }]
     })
 
 
@@ -141,13 +147,11 @@ function App() {
   useEffect(() => {
 
     const compresssedCartData = JSON.stringify(cart)  // convert cart data into local storage supported type
-
     localStorage.setItem('tech_store_cart', compresssedCartData) //  Save data 
   }, [cart])
 
   // Sort Products function
   function sortProductsByPrice(orderDirection) {
-
     const sortedCopy = [...filteredProducts];  // safe copy of the products to avoid violeting react immutability rules
     sortedCopy.sort((itemA, itemB) => {
       if (orderDirection === 'lowToHigh') {
@@ -166,12 +170,15 @@ function App() {
   function updateCartItemQuantity(targetId, intent) {
 
     const filteredCart = cart.map((cartItem) => {
-
       // 1. FIRST check if this is the item the user clicked
       if (cartItem.id === targetId) {
-
         // 2. THEN decide whether to add or subtract
         if (intent === "increment") {
+          const maxWareHouseStock = 5;
+          if (cartItem.quantity >= maxWareHouseStock) {
+            alert(`Stock Maximum: Cannot exceed ${maxWareHouseStock} units`);
+            return cartItem; //   return cartItem; // Return the item unchanged! Freeze the math!
+          }
           return { ...cartItem, quantity: cartItem.quantity + 1 }; // Increase item quantity
         }
 
@@ -190,7 +197,6 @@ function App() {
 
     setCart(purgedCart);
   }
-
 
 
   return (
@@ -231,6 +237,7 @@ function App() {
           <ProductGrid products={products}
             searchQuery={searchQuery}
             filteredProducts={filteredProducts}
+            cart={cart}
             addToCart={addToCart}
 
           />
@@ -247,6 +254,7 @@ function App() {
         <ShoppingCart
           removeCartItem={removeCartItem}
           cart={cart}
+          
           clearCart={clearCart}
           updateCartItemQuantity={updateCartItemQuantity}
           applyPromoCode={applyPromoCode}
