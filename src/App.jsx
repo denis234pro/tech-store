@@ -2,8 +2,11 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { SearchProducts } from "./components/SearchForm";
 import ShoppingCart from "./components/ShoppingCart";
-import ProductGrid from "./components/ProductGrid";
 import FilterByCategory from "./components/CategoryFilter";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import ProductDetail from "./pages/ProductDetail";
+
 
 function App() {
 
@@ -139,8 +142,9 @@ function App() {
 
   function clearCart() {
     setCart([])
-
-    localStorage.removeItem('tech_store_cart'); // Point the remve function to the exact  key woith data
+    localStorage.removeItem('tech_store_cart');
+    setHasDiscount(false)
+    // Point the remve function to the exact  key woith data
   }
 
   //UseEffect: 3,  Initiate Local storage watchman.
@@ -186,7 +190,6 @@ function App() {
           return { ...cartItem, quantity: cartItem.quantity - 1 }; // Decrease item quantity
         }
       }
-
       // This now correctly runs for all other non-matching items
       return cartItem;
     });
@@ -198,79 +201,88 @@ function App() {
     setCart(purgedCart);
   }
 
-
   return (
-    <div className="store-layout">
-      <div className="catalog-container">
-        <h1>Tech Core Global Market</h1>
-        <br />
+    <Router>
 
-
-        {loading && <p style={{ fontSize: '18px', color: '#666' }}>Please wait while fetching products...</p>}
-        <hr style={{ margin: '10px 0', borderColor: '#ccc' }} />
-        {error && <p style={{ color: '#f44336', fontWeight: 'bold' }}>⚠️{error}</p>}
-
-        <SearchProducts
-
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          clearSearch={clearSearch}
-
-        />
-
-        {!loading && !error && (<div>
-          <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', alignItems: 'center', padding: '10px', borderRadius: '6px' }}>
-            <span style={{ fontSize: '14px', color: '#666', fontWeight: 'bold' }}>Sort by prices:</span>
-            <button onClick={() => sortProductsByPrice('lowToHigh')} style={{ padding: '6px 12px', background: '#6382c5', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' }}>💲Low to High</button>
-
-            <button style={{ padding: '6px 12px', background: '#6382c5', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' }} onClick={() => sortProductsByPrice('highToLow')}>High to Low</button>
-          </div>
-
-          <FilterByCategory
-            products={products}
-            setFilteredProducts={setFilteredProducts}
-
-          />
-        </div>)}
-
-        {!loading && !error && <div className="products-grid">
-          <ProductGrid products={products}
+      <div className="store-layout">
+        <div className="catalog-container">
+          <h1>Tech Core Global Market</h1>
+          <br />
+          <SearchProducts
             searchQuery={searchQuery}
-            filteredProducts={filteredProducts}
-            cart={cart}
-            addToCart={addToCart}
-
+            setSearchQuery={setSearchQuery}
+            clearSearch={clearSearch}
           />
 
-        </div>
-        }
+          {loading && <p style={{ fontSize: '18px', color: '#666' }}>Please wait while fetching products...</p>}
+          <hr style={{ margin: '10px 0', borderColor: '#ccc' }} />
+          {error && <p style={{ color: '#f44336', fontWeight: 'bold' }}>⚠️{error}</p>}
 
-      </div>
-      <div className="cart-panel">
-        <div>
-          <h2>Your Shopping Cart</h2>
-          <hr style={{ margin: '10px 0', borderColor: '#e0e0e0' }} />
+          {!loading && !error && (<div>
+            <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', alignItems: 'center', padding: '10px', borderRadius: '6px' }}>
+              <span style={{ fontSize: '14px', color: '#666', fontWeight: 'bold' }}>Sort by prices:</span>
+              <button onClick={() => sortProductsByPrice('lowToHigh')} style={{ padding: '6px 12px', background: '#6382c5', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' }}>💲Low to High</button>
+
+              <button style={{ padding: '6px 12px', background: '#6382c5', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' }} onClick={() => sortProductsByPrice('highToLow')}>High to Low</button>
+            </div>
+
+
+          </div>)}
+
+          {!loading && !error && (
+            <Routes>
+              <Route
+                path="/" element={<Home
+                  products={products}
+                  setFilteredProducts={setFilteredProducts}
+                  cart={cart}
+                  addToCart={addToCart}
+                  filteredProducts={filteredProducts}
+                  searchQuery={searchQuery}
+
+                />}
+              />
+              <Route
+                path="/product/:id"
+                element={<ProductDetail
+                  products={products}
+                  cart={cart}
+                  addToCart={addToCart}
+                />}
+              />
+
+
+            </Routes>
+          )}
+
         </div>
-        <ShoppingCart
-          removeCartItem={removeCartItem}
-          cart={cart}
-          
-          clearCart={clearCart}
-          updateCartItemQuantity={updateCartItemQuantity}
-          applyPromoCode={applyPromoCode}
-          subTotalCost={subTotalCost}
-          setActiveDiscountRate={setActiveDiscountRate}
-          activeDiscountRate={activeDiscountRate}
-          discountAmount={discountAmount}
-          FinalTotalCost={FinalTotalCost}
-          removeDiscountCode={removeDiscountCode}
-          hasDiscount={hasDiscount}
-          setHasDiscount={setHasDiscount}
-          promoCodeInput={promoCodeInput}
-          setPromoCodeInput={setPromoCodeInput}
-        />
+        <div className="cart-panel">
+          <div>
+            <h2>Your Shopping Cart</h2>
+            <hr style={{ margin: '10px 0', borderColor: '#e0e0e0' }} />
+          </div>
+          <ShoppingCart
+            removeCartItem={removeCartItem}
+            cart={cart}
+
+            clearCart={clearCart}
+            updateCartItemQuantity={updateCartItemQuantity}
+            applyPromoCode={applyPromoCode}
+            subTotalCost={subTotalCost}
+            setActiveDiscountRate={setActiveDiscountRate}
+            activeDiscountRate={activeDiscountRate}
+            discountAmount={discountAmount}
+            FinalTotalCost={FinalTotalCost}
+            removeDiscountCode={removeDiscountCode}
+            hasDiscount={hasDiscount}
+            setHasDiscount={setHasDiscount}
+            promoCodeInput={promoCodeInput}
+            setPromoCodeInput={setPromoCodeInput}
+          />
+        </div>
       </div>
-    </div>
+
+    </Router>
   )
 }
 export default App;
