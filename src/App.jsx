@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import ReceiptView from "./pages/ReceiptView";
 import { SearchProducts } from "./components/SearchForm";
 import ShoppingCart from "./components/ShoppingCart";
-import FilterByCategory from "./components/CategoryFilter";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import Home from "./pages/Home";
 import ProductDetail from "./pages/ProductDetail";
 
 
 function App() {
 
+  const navigate = useNavigate();
   const [cart, setCart] = useState(() => {
 
     // Restore user saved cart on page refresh
@@ -28,6 +29,8 @@ function App() {
 
   const [products, setProducts] = useState([])
   const [filteredProducts, setFilteredProducts] = useState([]);
+
+  const [orderReceipt, setOrderReceipt] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
 
   const [loading, setLoading] = useState(true);
@@ -201,88 +204,129 @@ function App() {
     setCart(purgedCart);
   }
 
+  // Function Finalise Order
+  function finishOrder(customerCreds) {
+
+    const purchasedItems = [...cart]; // Make a safe cart clone of the main cart items 
+    const orderInvoice = {
+      buyerName: customerCreds.fullName,
+      deliveryLocation: customerCreds.shippingAddress,
+      itemsManifest: purchasedItems,
+      totalAmountPaid: FinalTotalCost,
+      transactionId: `TXN-${Math.floor(100000 + Math.random() * 900000)}`
+    }
+    setOrderReceipt(orderInvoice); // Update Order Receipt
+    setCart([]); // Reset cart
+    localStorage.removeItem("tech_store_cart") // clear local browser storage memory,
+    navigate("/receipt"); // Navigate to a receipt view page
+    console.log(orderInvoice)
+
+  }
+
   return (
-    <Router>
-
-      <div className="store-layout">
-        <div className="catalog-container">
-          <h1>Tech Core Global Market</h1>
-          <br />
-          <SearchProducts
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            clearSearch={clearSearch}
-          />
-
-          {loading && <p style={{ fontSize: '18px', color: '#666' }}>Please wait while fetching products...</p>}
-          <hr style={{ margin: '10px 0', borderColor: '#ccc' }} />
-          {error && <p style={{ color: '#f44336', fontWeight: 'bold' }}>⚠️{error}</p>}
-
-          {!loading && !error && (<div>
-            <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', alignItems: 'center', padding: '10px', borderRadius: '6px' }}>
-              <span style={{ fontSize: '14px', color: '#666', fontWeight: 'bold' }}>Sort by prices:</span>
-              <button onClick={() => sortProductsByPrice('lowToHigh')} style={{ padding: '6px 12px', background: '#6382c5', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' }}>💲Low to High</button>
-
-              <button style={{ padding: '6px 12px', background: '#6382c5', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' }} onClick={() => sortProductsByPrice('highToLow')}>High to Low</button>
-            </div>
 
 
-          </div>)}
+    <div className="store-layout">
+      <div className="catalog-container">
+       {window.location.pathname !== "/receipt" && ( <h1>Tech Core Global Market</h1>)}
+        <br />
+       {window.location.pathname !== "/receipt" && (
+         <SearchProducts
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          clearSearch={clearSearch}
+        />
+       )} 
 
-          {!loading && !error && (
-            <Routes>
-              <Route
-                path="/" element={<Home
+        {loading &&  window.location.pathname !== "/receipt" && <p style={{ fontSize: '18px', color: '#666' }}>Please wait while fetching products...</p>}
+       {window.location.pathname !== "/receipt" &&  <hr style={{ margin: '10px 0', borderColor: '#ccc' }} />}
+        {error && <p style={{ color: '#f44336', fontWeight: 'bold' }}>⚠️{error}</p>}
+
+        {!loading && !error && window.location.pathname !== "/receipt" && (<div>
+          <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', alignItems: 'center', padding: '10px', borderRadius: '6px' }}>
+            <span style={{ fontSize: '14px', color: '#666', fontWeight: 'bold' }}>Sort by prices:</span>
+            <button onClick={() => sortProductsByPrice('lowToHigh')} style={{ padding: '6px 12px', background: '#6382c5', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' }}>💲Low to High</button>
+
+            <button style={{ padding: '6px 12px', background: '#6382c5', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' }} onClick={() => sortProductsByPrice('highToLow')}>High to Low</button>
+          </div>
+
+
+        </div>)}
+        <Routes>
+          <Route
+            path="/" element={
+              !loading && !error && (// Eslint error, says that non-null assertions can only be used in Typescript files. what are they trying to mean here 
+
+                <Home
                   products={products}
                   setFilteredProducts={setFilteredProducts}
                   cart={cart}
                   addToCart={addToCart}
                   filteredProducts={filteredProducts}
                   searchQuery={searchQuery}
+                />
 
-                />}
-              />
-              <Route
-                path="/product/:id"
-                element={<ProductDetail
-                  products={products}
-                  cart={cart}
-                  addToCart={addToCart}
-                />}
-              />
-
-
-            </Routes>
-          )}
-
-        </div>
-        <div className="cart-panel">
-          <div>
-            <h2>Your Shopping Cart</h2>
-            <hr style={{ margin: '10px 0', borderColor: '#e0e0e0' }} />
-          </div>
-          <ShoppingCart
-            removeCartItem={removeCartItem}
-            cart={cart}
-
-            clearCart={clearCart}
-            updateCartItemQuantity={updateCartItemQuantity}
-            applyPromoCode={applyPromoCode}
-            subTotalCost={subTotalCost}
-            setActiveDiscountRate={setActiveDiscountRate}
-            activeDiscountRate={activeDiscountRate}
-            discountAmount={discountAmount}
-            FinalTotalCost={FinalTotalCost}
-            removeDiscountCode={removeDiscountCode}
-            hasDiscount={hasDiscount}
-            setHasDiscount={setHasDiscount}
-            promoCodeInput={promoCodeInput}
-            setPromoCodeInput={setPromoCodeInput}
+              )
+            }
           />
-        </div>
-      </div>
 
-    </Router>
+          <Route
+            path="/product/:id" element={
+              <ProductDetail
+                products={products}
+                cart={cart}
+                addToCart={addToCart}
+              />
+            }
+          />
+         <Route path="/receipt"
+         element= {
+          <ReceiptView
+            orderReceipt={orderReceipt}
+            finishOrder={finishOrder}
+          />
+         }
+         >
+         </Route>
+        
+        </Routes>
+
+
+
+{/* Conditional rendering for receipt page view to be refactored */}
+      </div>
+    {window.location.pathname !== "/receipt" && (
+        <div className="cart-panel">
+        <div>
+        <h2>Your Shopping Cart</h2>
+          <hr style={{ margin: '10px 0', borderColor: '#e0e0e0' }} />
+        </div>
+      
+        <ShoppingCart
+          removeCartItem={removeCartItem}
+          cart={cart}
+
+          clearCart={clearCart}
+          updateCartItemQuantity={updateCartItemQuantity}
+          applyPromoCode={applyPromoCode}
+          subTotalCost={subTotalCost}
+          setActiveDiscountRate={setActiveDiscountRate}
+          activeDiscountRate={activeDiscountRate}
+          discountAmount={discountAmount}
+          FinalTotalCost={FinalTotalCost}
+          removeDiscountCode={removeDiscountCode}
+          hasDiscount={hasDiscount}
+          finishOrder={finishOrder}
+          setHasDiscount={setHasDiscount}
+          promoCodeInput={promoCodeInput}
+          setPromoCodeInput={setPromoCodeInput}
+        />
+      
+      </div>
+    )}
+    </div>
+
+
   )
 }
 export default App;

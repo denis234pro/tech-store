@@ -1,9 +1,10 @@
 
 import CheckoutForm from "./CheckoutForm"
-export default function ShoppingCart({ cart, removeCartItem, clearCart, updateCartItemQuantity, promoCodeInput, FinalTotalCost, setPromoCodeInput, applyPromoCode, discountAmount, removeDiscountCode, hasDiscount, }) {
+export default function ShoppingCart({ cart, removeCartItem, clearCart, updateCartItemQuantity, promoCodeInput, FinalTotalCost, setPromoCodeInput, applyPromoCode, discountAmount, removeDiscountCode, hasDiscount, finishOrder }) {
 
 
     return (
+    
         <div>
 
             {/* If the cart array length is empty, show the baseline placeholder */}
@@ -68,20 +69,22 @@ export default function ShoppingCart({ cart, removeCartItem, clearCart, updateCa
                         {discountAmount > 0 && (
                             <div style={{ marginTop: '8px', fontSize: '12px', color: '#b91c1c', fontWeight: 'bold', display: 'flex', justifyContent: 'space-between' }}>
                                 <span>🎟️ Promo 20% Off:</span>
-                                <span>{discountAmount.toFixed(2)}</span>
+                                <span>${discountAmount.toFixed(2)}</span>
 
                             </div>
                         )}
                     </div>
                 )}
-
+                {/* COnditionally render the checkOut Form if the cart is not null */}
                 {cart.length > 0 && (<CheckoutForm cart={cart}
                     totalCost={FinalTotalCost}
+                    finishOrder={finishOrder}
                     clearCart={clearCart}
                 />)}
 
             </div>
 
         </div>
+    
     )
 }

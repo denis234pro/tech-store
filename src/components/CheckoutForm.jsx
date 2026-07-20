@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function CheckoutForm({ totalCost, clearCart }) {
+export default function CheckoutForm({ finishOrder }) {
     const [customInfo, setCustomInfo] = useState({
         fullName: '',
         shippingAddress: ''
@@ -15,13 +15,13 @@ export default function CheckoutForm({ totalCost, clearCart }) {
             alert('Customer shipping credentials cannot be blank')
             return;
         }
-        alert(`SUCCESS: Order Placed for ${customInfo.fullName}!\nTotal Amount Charged: $${totalCost.toFixed(2)}`)
+       finishOrder(customInfo)// 
         // Resetting the form to initial state
         setCustomInfo({
             fullName: '',
             shippingAddress: ''
         })
-        clearCart();
+       
     }
 
     return (
