@@ -219,7 +219,7 @@ function App() {
     setCart([]); // Reset cart
     localStorage.removeItem("tech_store_cart") // clear local browser storage memory,
     navigate("/receipt"); // Navigate to a receipt view page
-    console.log(orderInvoice)
+
 
   }
 
@@ -290,8 +290,6 @@ function App() {
          </Route>
         
         </Routes>
-
-
 
 {/* Conditional rendering for receipt page view to be refactored */}
       </div>
